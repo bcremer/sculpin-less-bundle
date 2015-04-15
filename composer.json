@@ -1,0 +1,22 @@
+{
+  "name": "bcremer/sculpin-less-bundle",
+  "type": "library",
+  "keywords": ["sculpin", "bundle", "less", "lessphp"],
+  "description": "Sculpin less bundle",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Benjamin Cremer",
+      "email": "bc@benjamin-cremer.de"
+    }
+  ],
+  "require": {
+    "php": ">=5.4.0",
+    "oyejorge/less.php": "~1.7.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Bcremer\\Sculpin\\Bundle\\LessBundle\\": ""
+    }
+  }
+}
