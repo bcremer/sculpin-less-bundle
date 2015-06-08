@@ -50,6 +50,17 @@ class SculpinKernel extends \Sculpin\Bundle\SculpinBundle\HttpKernel\AbstractKer
 # app/config/sculpin_kernel.yml
 sculpin_less:
     extensions: ["less"]
+    files: ["assets/css/basic.less"]
+```
+
+By default the `extensions` whitelist is used. If the `files` whitelist is set it takes precedence and all other LESS files are not converted.
+
+To ignore non matching LESS files the sculping `ignore` configuration can be used:
+
+```yaml
+# app/config/sculpin_kernel.yml
+sculpin:
+    ignore: ["assets/css/_imports/"]
 ```
 
 ## License

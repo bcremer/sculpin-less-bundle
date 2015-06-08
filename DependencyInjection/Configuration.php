@@ -21,6 +21,10 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue(['less'])
                     ->prototype('scalar')->end()
                 ->end()
+                ->arrayNode('files')
+                    ->defaultValue([])
+                    ->prototype('scalar')->end()
+                ->end()
             ->end();
 
         return $treeBuilder;

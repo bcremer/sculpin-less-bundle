@@ -19,7 +19,9 @@ class SculpinLessExtension extends Extension
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
 
-        $container->setParameter('sculpin_less.extensions', $config['extensions']);
-        $container->findDefinition('sculpin_less.event.less_converter')->addArgument($config['extensions']);
+        $container->findDefinition('sculpin_less.event.less_converter')
+                  ->addArgument($config['extensions'])
+                  ->addArgument($config['files']);
+
     }
 }

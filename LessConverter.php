@@ -3,6 +3,7 @@ namespace Bcremer\Sculpin\Bundle\LessBundle;
 
 use Sculpin\Core\Event\SourceSetEvent;
 use Sculpin\Core\Sculpin;
+use Sculpin\Core\Source\AbstractSource;
 use Sculpin\Core\Source\FileSource;
 use Sculpin\Core\Source\MemorySource;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -12,7 +13,12 @@ class LessConverter implements EventSubscriberInterface
     /**
      * @var string[]
      */
-    private $extensions = [];
+    private $extensions;
+
+    /**
+     * @var string[]
+     */
+    private $files;
 
     /**
      * {@inheritdoc}
@@ -26,10 +32,12 @@ class LessConverter implements EventSubscriberInterface
 
     /**
      * @param string[] $extensions
+     * @param string[] $files
      */
-    public function __construct(array $extensions = [])
+    public function __construct(array $extensions = [], array $files = [])
     {
-        $this->extensions = $extensions;
+        $this->extensions  = $extensions;
+        $this->files = $files;
     }
 
     /**
@@ -43,24 +51,49 @@ class LessConverter implements EventSubscriberInterface
 
         /** @var FileSource $source */
         foreach ($sourceSetEvent->updatedSources() as $source) {
-            foreach ($this->extensions as $extension) {
-                if (!fnmatch("*.{$extension}", $source->filename())) {
-                    continue;
+
+            if (!$this->shouldBeConverted($source)) {
+                continue;
+            }
+
+            $source->setShouldBeSkipped();
+
+            $css = $this->parseLess($source->file()->getPathname());
+            if (!$css) {
+                continue;
+            }
+
+            $generatedSource = $this->createDuplicate($source);
+            $generatedSource->setContent($css);
+
+            $sourceSet->mergeSource($generatedSource);
+        }
+    }
+
+    /**
+     * @param AbstractSource $source
+     * @return bool
+     */
+    private function shouldBeConverted(AbstractSource $source)
+    {
+        // File based whitelist has precedence
+        if (!empty($this->files)) {
+            foreach ($this->files as $fileName) {
+                if ($source->relativePathname() === $fileName) {
+                    return true;
                 }
+            }
 
-                $source->setShouldBeSkipped();
+            return false;
+        }
 
-                $css = $this->parseLess($source->file()->getPathname());
-                if (!$css) {
-                    continue;
-                }
-
-                $generatedSource = $this->createDuplicate($source);
-                $generatedSource->setContent($css);
-
-                $sourceSet->mergeSource($generatedSource);
+        foreach ($this->extensions as $extension) {
+            if (fnmatch("*.{$extension}", $source->filename())) {
+                return true;
             }
         }
+
+        return false;
     }
 
     /**
@@ -99,9 +132,12 @@ class LessConverter implements EventSubscriberInterface
      */
     private function parseLess($filename)
     {
-        $parser = new \Less_Parser();
+        $options = array('compress' => true);
+        $parser = new \Less_Parser($options);
+
         $parser->parseFile($filename);
 
         return trim($parser->getCss());
     }
+
 }
