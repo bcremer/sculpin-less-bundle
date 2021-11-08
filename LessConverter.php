@@ -1,4 +1,5 @@
 <?php
+
 namespace Bcremer\Sculpin\Bundle\LessBundle;
 
 use Sculpin\Core\Event\SourceSetEvent;
@@ -13,21 +14,21 @@ class LessConverter implements EventSubscriberInterface
     /**
      * @var string[]
      */
-    private $extensions;
+    private array $extensions;
 
     /**
      * @var string[]
      */
-    private $files;
+    private array $files;
 
     /**
      * {@inheritdoc}
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
-        return array(
+        return [
             Sculpin::EVENT_BEFORE_RUN => 'beforeRun',
-        );
+        ];
     }
 
     /**
@@ -36,7 +37,7 @@ class LessConverter implements EventSubscriberInterface
      */
     public function __construct(array $extensions = [], array $files = [])
     {
-        $this->extensions  = $extensions;
+        $this->extensions = $extensions;
         $this->files = $files;
     }
 
@@ -45,7 +46,7 @@ class LessConverter implements EventSubscriberInterface
      *
      * @param SourceSetEvent $sourceSetEvent Source Set Event
      */
-    public function beforeRun(SourceSetEvent $sourceSetEvent)
+    public function beforeRun(SourceSetEvent $sourceSetEvent): void
     {
         $sourceSet = $sourceSetEvent->sourceSet();
 
@@ -74,7 +75,7 @@ class LessConverter implements EventSubscriberInterface
      * @param AbstractSource $source
      * @return bool
      */
-    private function shouldBeConverted(AbstractSource $source)
+    private function shouldBeConverted(AbstractSource $source): bool
     {
         // File based whitelist has precedence
         if (!empty($this->files)) {
@@ -96,23 +97,15 @@ class LessConverter implements EventSubscriberInterface
         return false;
     }
 
-    /**
-     * @param string $fileName
-     * @return string
-     */
-    private function replaceFileExtension($fileName)
+    private function replaceFileExtension(string $fileName): string
     {
         return str_replace('.less', '.css', $fileName);
     }
 
-    /**
-     * @param FileSource $source
-     * @return MemorySource
-     */
-    private function createDuplicate(FileSource $source)
+    private function createDuplicate(FileSource $source): MemorySource
     {
         $options = [
-            'filename'         => $this->replaceFileExtension($source->filename()),
+            'filename' => $this->replaceFileExtension($source->filename()),
             'relativePathname' => $this->replaceFileExtension($source->relativePathname()),
         ];
 
@@ -130,14 +123,13 @@ class LessConverter implements EventSubscriberInterface
      * @param string $filename
      * @return string
      */
-    private function parseLess($filename)
+    private function parseLess(string $filename): string
     {
-        $options = array('compress' => true);
+        $options = ['compress' => true];
         $parser = new \Less_Parser($options);
 
         $parser->parseFile($filename);
 
         return trim($parser->getCss());
     }
-
 }
