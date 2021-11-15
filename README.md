@@ -2,7 +2,7 @@
 
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 
-[Sculpin](http://sculpin.io) bundle that integrates the [oyejorge/less.php](https://github.com/oyejorge/less.php) LESS processor.
+[Sculpin](http://sculpin.io) bundle that integrates the [wikimedia/less.php](https://github.com/wikimedia/less.php) LESS processor.
 
 Each `*.less` file is parsed to CSS. 
 If the parser generated any CSS output the file is renamed to `*.css` in place. 
@@ -23,7 +23,7 @@ Please create an issue on GitHub if you have any ideas. All contributions are we
 ```json
 {
     "require": {
-        "bcremer/sculpin-less-bundle": "~0.1"
+        "bcremer/sculpin-less-bundle": "~0.2"
     }
 }
 ```
