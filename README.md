@@ -23,7 +23,7 @@ Please create an issue on GitHub if you have any ideas. All contributions are we
 ```json
 {
     "require": {
-        "bcremer/sculpin-less-bundle": "~0.2"
+        "bcremer/sculpin-less-bundle": "~0.3"
     }
 }
 ```
