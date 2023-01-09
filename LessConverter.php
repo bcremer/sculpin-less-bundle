@@ -64,8 +64,7 @@ class LessConverter implements EventSubscriberInterface
                 continue;
             }
 
-            $generatedSource = $this->createDuplicate($source);
-            $generatedSource->setContent($css);
+            $generatedSource = $this->createDuplicate($source, $css);
 
             $sourceSet->mergeSource($generatedSource);
         }
@@ -102,11 +101,12 @@ class LessConverter implements EventSubscriberInterface
         return str_replace('.less', '.css', $fileName);
     }
 
-    private function createDuplicate(FileSource $source): MemorySource
+    private function createDuplicate(FileSource $source, string $css): MemorySource
     {
         $options = [
             'filename' => $this->replaceFileExtension($source->filename()),
             'relativePathname' => $this->replaceFileExtension($source->relativePathname()),
+            'content' => $css
         ];
 
         $generatedSource = $source->duplicate(
